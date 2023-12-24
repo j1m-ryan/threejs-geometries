@@ -36,13 +36,28 @@ function main() {
   const controls = new OrbitControls(camera, canvas);
   controls.enableDamping = true;
 
-  const material = new THREE.MeshPhongMaterial({ color: "red" });
+  const material = new THREE.MeshBasicMaterial({
+    color: "red",
+    wireframe: true,
+  });
 
-  const geometry = new THREE.BoxGeometry();
+  // const geometry = new THREE.BoxGeometry(1, 1, 1, 4, 4, 4);
 
-  const cube = new THREE.Mesh(geometry, material);
+  const count = 50;
+  const positionsArray = new Float32Array(count * 3 * 3);
 
-  scene.add(cube);
+  for (let i = 0; i < positionsArray.length; i++) {
+    positionsArray[i] = Math.random() - 0.5;
+  }
+
+  const bufferAttribute = new THREE.BufferAttribute(positionsArray, 3);
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", bufferAttribute);
+
+  const mesh = new THREE.Mesh(geometry, material);
+
+  scene.add(mesh);
 
   const color = 0xffffff;
   const intensity = 3;
@@ -66,7 +81,7 @@ function main() {
   const tick = () => {
     const elapsedTime = timer.getElapsed();
     timer.update();
-    cube.rotation.y = elapsedTime * 0.5;
+    mesh.rotation.y = elapsedTime * 0.5;
 
     if (resizeRendererToDisplaySize(renderer)) {
       const canvas = renderer.domElement;
